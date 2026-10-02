@@ -11,7 +11,7 @@ why this shield defines its own physical layout.
 The shield lives in `boards/shields/unix60/`; see
 [`boards/shields/unix60/README.md`](boards/shields/unix60/README.md) for
 build/flash instructions, hardware pin mapping and provenance details. This
-file is a keymap reference — what every key does, on both layers.
+file is a keymap reference — what every key does, on all three layers.
 
 ## Names
 

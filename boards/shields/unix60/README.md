@@ -17,7 +17,7 @@ no local Zephyr toolchain in this repo.
 1. Open the **Actions** tab of this repository and pick the workflow run for
    the commit you want (or the latest run on `main`).
 2. Once it finishes, download the `firmware` artifact from the run summary
-   and unzip it. It contains two files:
+   and unzip it. It contains three files:
    - `unix60-nice_nano_v2-zmk.uf2` — the plain firmware (`build.yaml`'s
      `unix60` entry).
    - `unix60_studio.uf2` — the same firmware plus [ZMK
