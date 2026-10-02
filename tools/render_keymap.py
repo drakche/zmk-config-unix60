@@ -6,7 +6,7 @@ Reads the same sources tools/validate_shield.py already parses and trusts
 stay in sync with the actual shield files rather than being hand-drawn.
 
 Run from the repo root:  python3 tools/render_keymap.py
-Writes boards/shields/unix60/images/{base,fn}-layer.svg.
+Writes boards/shields/unix60/images/{base,fn,meta}-layer.svg.
 """
 
 import os
@@ -137,6 +137,7 @@ def main():
     layers = vs.keymap_layers()
     render("base-layer.svg", keys, layers[0], "Unix60 - Base layer")
     render("fn-layer.svg", keys, layers[1], "Unix60 - Fn layer")
+    render("meta-layer.svg", keys, layers[2], "Unix60 - Meta layer (Fn+Ctrl)")
 
 
 if __name__ == "__main__":

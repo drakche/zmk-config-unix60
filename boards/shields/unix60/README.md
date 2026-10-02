@@ -33,15 +33,18 @@ no local Zephyr toolchain in this repo.
 4. Drag the `.uf2` file you chose onto the `NICENANO` drive. It flashes and
    reboots automatically once the copy finishes.
 
-### Key reference (Fn layer)
+### Key reference
 
 | Keys | Action |
 | --- | --- |
-| `Fn` + `Q`…`T` | Select Bluetooth profile 0-4 |
-| `Fn` + `Y` | Clear the current Bluetooth profile |
 | `Fn` + `U` | Enter the bootloader |
-| `Fn` + `]` | Soft reset |
 | `Fn` + `B` | Unlock ZMK Studio (only needed on the `unix60_studio` build) |
+| `Fn` + `Ctrl` + `Esc` | Clear the current Bluetooth profile |
+| `Fn` + `Ctrl` + `1`…`5` | Select Bluetooth profile 0-4 |
+| `Fn` + `Ctrl` + `` ` `` | Soft reset |
+
+Bluetooth and soft reset sit behind `Fn` + `Ctrl` rather than `Fn` alone, so a
+mistyped `Fn` chord cannot drop a pairing or reset the board mid-use.
 
 ## Hardware
 
@@ -66,10 +69,16 @@ alternate-layout switch positions, left unmapped on purpose:
 
 ## Keymap
 
-`unix60.keymap` defines two layers, named `Base` and `Fn` (the names ZMK
-Studio shows). Both are ported 1:1 from `unix60.json` (the QMK Configurator
-export in the repo root); the only additions are the Bluetooth, bootloader,
-reset and Studio-unlock keys, which occupy slots the export left blank.
+`unix60.keymap` defines three layers, named `Base`, `Fn` and `Meta` (the names
+ZMK Studio shows). `Base` and `Fn` are ported 1:1 from `unix60.json` (the QMK
+Configurator export in the repo root); the additions are the bootloader and
+Studio-unlock keys and the `Meta` layer hold, which occupy slots the export
+left blank.
+
+`Meta` is reached by holding `Fn` and then `Ctrl`. `Ctrl` is a modifier rather
+than a layer, so it cannot drive a `conditional_layers` rule - instead the
+`Ctrl` position *on the Fn layer* is bound to `&mo 2`. `Ctrl` by itself is
+unaffected.
 
 **Base layer:**
 
@@ -78,6 +87,10 @@ reset and Studio-unlock keys, which occupy slots the export left blank.
 **Fn layer** (hold `Fn`, the bottom-right key on the Base layer):
 
 ![Fn layer](images/fn-layer.svg)
+
+**Meta layer** (hold `Fn`, then `Ctrl`):
+
+![Meta layer](images/meta-layer.svg)
 
 The images are generated from the shield's own devicetree files (geometry
 from `unix60-layouts.dtsi`, bindings from `unix60.keymap`), so they cannot

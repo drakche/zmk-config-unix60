@@ -51,17 +51,23 @@ then reference `shield: unix60` in your `build.yaml`.
 
 ## Layout at a glance
 
-Two layers are defined in `boards/shields/unix60/unix60.keymap`:
+Three layers are defined in `boards/shields/unix60/unix60.keymap`:
 
 | Layer | Display name | How to reach it |
 | --- | --- | --- |
 | 0 | `Base` | Active by default |
 | 1 | `Fn` | Hold `Fn` — the 1u key right of the right shift (`&mo 1`) |
+| 2 | `Meta` | Hold `Fn`, then `Ctrl` (`&mo 2` on the Fn layer) |
 
-Both are ported 1:1 from `unix60.json` (a QMK Configurator export for
-`LAYOUT_60_hhkb`, vendored at the repo root). The only additions on top of
-the export are the Bluetooth, bootloader, reset and ZMK Studio unlock keys,
-which occupy slots the export left blank (`KC_TRNS`).
+`Base` and `Fn` are ported 1:1 from `unix60.json` (a QMK Configurator export
+for `LAYOUT_60_hhkb`, vendored at the repo root). The additions on top of the
+export are the bootloader and ZMK Studio unlock keys and the `Meta` layer
+hold, which occupy slots the export left blank (`KC_TRNS`). `Meta` is new and
+has no counterpart in the export.
+
+`Ctrl` is a modifier, not a layer, so it cannot appear in a
+`conditional_layers` rule. Instead the `Ctrl` *position on the Fn layer* is
+bound to `&mo 2`; `Ctrl` on its own is untouched.
 
 ## Base layer
 
@@ -87,7 +93,7 @@ the 1.5u blockers the HHKB case requires at each end.
 
 ```
 | PWR | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 | INS | DEL |
-|  CAPS  | BT0 | BT1 | BT2 | BT3 | BT4 |BTCLR| BOOT| PSCR| SCRL|PAUSE|  UP |RESET|  NUM   |
+|  CAPS  |     |     |     |     |     |     | BOOT| PSCR| SCRL|PAUSE|  UP |     |  NUM   |
 |          | VOLD| VOLU| MUTE| EJCT|     | KP* | KP/ | HOME| PGUP| LEFT|RIGHT|   KPENT    |
 |             |MPREV|MPLAY|MSTOP|MNEXT|STUDO| KP+ | KP- | END | PGDN| DOWN|        |      |
 |        |     |        |                                   |        |     |        |
@@ -97,10 +103,10 @@ Row by row:
 
 - **Number row → F-keys and system:** `PWR` (system power), `F1`-`F12`,
   `Ins`, `Del`.
-- **QWERTY row → Bluetooth and device control:** `Caps` is unchanged;
-  `Q`-`T` select Bluetooth profiles 0-4, `Y` clears the current profile,
-  `U` enters the bootloader, then `PrtSc`, `ScrLk`, `Pause`, `Up`, and `]`
-  resets the device (`&sys_reset`), ending with `NumLk`.
+- **QWERTY row → device control:** `Caps` is unchanged; `U` enters the
+  bootloader, then `PrtSc`, `ScrLk`, `Pause`, `Up`, and `NumLk`. Bluetooth and
+  soft reset used to live on this row and have moved to the `Meta` layer, so a
+  mistyped `Fn` chord cannot drop a pairing or reset the board.
 - **Home row → media volume and numpad/navigation:** `Vol-`, `Vol+`, `Mute`,
   `Eject`, then a numpad overlay (`KP*`, `KP/`, `Home`, `PgUp`, `Left`,
   `Right`, `KP Enter`).
@@ -116,15 +122,37 @@ Row by row:
 
 | Keys | Action |
 | --- | --- |
-| `Fn` + `Q`…`T` | Select Bluetooth profile 0-4 |
-| `Fn` + `Y` | Clear the current Bluetooth profile |
 | `Fn` + `U` | Enter the bootloader |
-| `Fn` + `]` | Soft reset |
 | `Fn` + `B` | Unlock ZMK Studio (only meaningful on the `unix60_studio` build) |
+| `Fn` + `Ctrl` + `Esc` | Clear the current Bluetooth profile |
+| `Fn` + `Ctrl` + `1`…`5` | Select Bluetooth profile 0-4 |
+| `Fn` + `Ctrl` + `` ` `` | Soft reset |
 | `Fn` + `F1`…`F12` | Function keys |
 | `Fn` + arrows / `Home`/`End`/`PgUp`/`PgDn` | Navigation cluster |
 | `Fn` + media row (`VOLD`/`VOLU`/`MUTE`/`EJCT`/`MPREV`/`MPLAY`/`MSTOP`/`MNEXT`) | Media transport and volume |
 | `Fn` + `KP*`/`KP/`/`KP+`/`KP-`/`KPENT` | Numpad overlay |
+
+## Meta layer
+
+![Meta layer](boards/shields/unix60/images/meta-layer.svg)
+
+```
+|BTCLR| BT0 | BT1 | BT2 | BT3 | BT4 |     |     |     |     |     |     |     |     |RESET|
+|        |     |     |     |     |     |     |     |     |     |     |     |     |        |
+|          |     |     |     |     |     |     |     |     |     |     |     |            |
+|             |     |     |     |     |     |     |     |     |     |     |        |      |
+|        |     |        |                                   |        |     |        |
+```
+
+Reached by holding `Fn` and then `Ctrl`. Everything not listed is `&trans`, so
+it falls through to the `Fn` layer beneath.
+
+- **`Esc`** clears the current Bluetooth profile (`&bt BT_CLR`).
+- **`1`-`5`** select Bluetooth profiles 0-4 (`&bt BT_SEL 0`-`4`).
+- **`` ` ``** soft-resets the device (`&sys_reset`).
+
+These were on the `Fn` layer originally. Moving them behind a second hold means
+a mistyped `Fn` chord can no longer drop a pairing or reset the board mid-use.
 
 ## Repo layout
 

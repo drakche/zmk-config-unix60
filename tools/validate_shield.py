@@ -300,16 +300,24 @@ QMK_TO_ZMK = {
 
 # Wireless and Studio-unlock keys substituted into &trans slots on the Fn
 # layer. Position -> binding.
+# Bluetooth and soft reset moved to the Meta layer (Fn+Ctrl); only the
+# bootloader, the Meta-layer hold and the Studio unlock remain here.
 FN_SUBSTITUTIONS = {
-    16: "&bt BT_SEL 0",   # Q
-    17: "&bt BT_SEL 1",   # W
-    18: "&bt BT_SEL 2",   # E
-    19: "&bt BT_SEL 3",   # R
-    20: "&bt BT_SEL 4",   # T
-    21: "&bt BT_CLR",     # Y
     22: "&bootloader",    # U
-    27: "&sys_reset",     # ]
+    29: "&mo 2",          # Ctrl - holds the Meta layer while Fn is down
     47: "&studio_unlock", # B
+}
+
+# Layer 2 is not in unix60.json. Keyed by position so a typo in the keymap
+# shows up as a failure rather than silently shipping.
+META_BINDINGS = {
+    0:  "&bt BT_CLR",     # Esc
+    1:  "&bt BT_SEL 0",
+    2:  "&bt BT_SEL 1",
+    3:  "&bt BT_SEL 2",
+    4:  "&bt BT_SEL 3",
+    5:  "&bt BT_SEL 4",
+    14: "&sys_reset",     # `
 }
 
 
@@ -352,9 +360,9 @@ def check_keymap():
     check("keymap includes behaviors.dtsi", "#include <behaviors.dtsi>" in text)
     check("keymap includes keys.h", "dt-bindings/zmk/keys.h" in text)
     check("keymap includes bt.h", "dt-bindings/zmk/bt.h" in text)
-    check("keymap has 2 layers", len(layers) == 2, "got %d" % len(layers))
+    check("keymap has 3 layers", len(layers) == 3, "got %d" % len(layers))
 
-    if len(layers) != 2:
+    if len(layers) != 3:
         return
 
     for index, bindings in enumerate(layers):
@@ -389,7 +397,7 @@ def check_keymap():
         )
         expected_fn[position] = binding
     check(
-        "layer 1 matches unix60.json plus the 9 substituted keys",
+        "layer 1 matches unix60.json plus the %d substituted keys" % len(FN_SUBSTITUTIONS),
         layers[1] == expected_fn,
         "first mismatch: %r" % (
             next(
@@ -401,6 +409,38 @@ def check_keymap():
                 None,
             ),
         ),
+    )
+
+    expected_meta = ["&trans"] * len(layers[0])
+    for position, binding in META_BINDINGS.items():
+        expected_meta[position] = binding
+    check(
+        "layer 2 is the %d Meta bindings, everything else &trans" % len(META_BINDINGS),
+        layers[2] == expected_meta,
+        "first mismatch: %r" % (
+            next(
+                (
+                    (i, got, want)
+                    for i, (got, want) in enumerate(zip(layers[2], expected_meta))
+                    if got != want
+                ),
+                None,
+            ),
+        ),
+    )
+
+
+
+def check_meta_layer(layers):
+    """Layer 2 is not in unix60.json - it was added for Fn+Ctrl. Until it has
+    real bindings every key should be &trans, so anything bound there is
+    deliberate and shows up as a diff rather than passing silently."""
+    if len(layers) < 3:
+        return
+    check(
+        "layer 2 has the same key count as the others",
+        len(layers[2]) == len(layers[0]),
+        "got %d, expected %d" % (len(layers[2]), len(layers[0])),
     )
 
 
