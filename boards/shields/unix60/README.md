@@ -108,7 +108,34 @@ variant: 2u backspace, unsplit right shift, seven-key bottom row. The Unix60 is
 true HHKB, so `unix60-layouts.dtsi` defines its own layout, transcribed from
 QMK's `LAYOUT_60_hhkb`.
 
-## Random disconnects
+## Bluetooth
+
+### Per-profile names
+
+ZMK advertises one name, `CONFIG_ZMK_KEYBOARD_NAME`, for every profile, so a
+keyboard paired to several machines appears as five identical `Unix60` entries.
+`src/bluetooth_profile_name.c` subscribes to `zmk_ble_active_profile_changed`
+and renames the device to match the profile that just became active:
+
+| Keys | Profile | Advertised as |
+| --- | --- | --- |
+| `Fn` + `Ctrl` + `1` | 0 | `Unix60-BT0` |
+| `Fn` + `Ctrl` + `2` | 1 | `Unix60-BT1` |
+| `Fn` + `Ctrl` + `3` | 2 | `Unix60-BT2` |
+| `Fn` + `Ctrl` + `4` | 3 | `Unix60-BT3` |
+| `Fn` + `Ctrl` + `5` | 4 | `Unix60-BT4` |
+
+The names follow ZMK's profile numbering, which starts at 0, so they are off by
+one from the number row that selects them.
+
+**A host caches the name it saw when it bonded.** Flashing this does not rename
+anything that is already paired — to pick up the new name on a host, remove the
+pairing there, clear the profile with `Fn` + `Ctrl` + `Esc`, and pair again.
+
+This needs `CONFIG_BT_DEVICE_NAME_DYNAMIC=y`; `bt_set_name()` is a stub without
+it. Edit the `profile_names` array to change the names.
+
+### Random disconnects
 
 A board that drops and reconnects on its own while the battery still reads full
 is usually a low-frequency clock problem, not a power one. BLE derives its
@@ -119,8 +146,8 @@ windows and the host gives up on it.
 `unix60.conf` sets `CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`, which runs that clock
 from the nRF52's internal RC oscillator instead. The RC oscillator is on the die
 and cannot be missing, so this rules the crystal out. It is the worse clock when
-the crystal works -- 500 ppm against 20 ppm, so the radio keeps wider receive
-windows and idle current rises a little -- so comment it back out if it makes no
+the crystal works — 500 ppm against 20 ppm, so the radio keeps wider receive
+windows and idle current rises a little — so comment it back out if it makes no
 difference.
 
 ## Reversed diodes (`unix60_row2col` build)

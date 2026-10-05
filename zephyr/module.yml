@@ -1,5 +1,6 @@
 name: zmk-keyboard-unix60
 build:
+  cmake: .
   settings:
     board_root: .
     snippet_root: .

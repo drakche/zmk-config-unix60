@@ -154,6 +154,11 @@ it falls through to the `Fn` layer beneath.
 These were on the `Fn` layer originally. Moving them behind a second hold means
 a mistyped `Fn` chord can no longer drop a pairing or reset the board mid-use.
 
+Each profile advertises under its own name — `Unix60-BT0` through `Unix60-BT4`,
+rather than five identical `Unix60` entries — but only to hosts paired after the
+rename; see [Per-profile
+names](boards/shields/unix60/README.md#per-profile-names).
+
 ## Repo layout
 
 | Path | What it is |
@@ -164,5 +169,7 @@ a mistyped `Fn` chord can no longer drop a pairing or reset the board mid-use.
 | `unix60-keyboard.json` | QMK's `keyboards/fr4/unix60/keyboard.json`, vendored byte-identical — the matrix/geometry source of truth |
 | `build.yaml` | GitHub Actions build matrix (`unix60`, `unix60_studio` and `unix60_row2col` firmware) |
 | `snippets/unix60-row2col/` | Diagnostic build for a hand-assembled board with reversed diodes — flips the scan direction instead of desoldering 63 parts |
+| `src/bluetooth_profile_name.c` | Advertises a different name per Bluetooth profile, so paired hosts do not all show `Unix60` |
+| `CMakeLists.txt` | Builds `src/` into the firmware; the module's only C code |
 | `tools/validate_shield.py` | The project's only test suite — static consistency checks, run with `python3 tools/validate_shield.py` |
 | `tools/render_keymap.py` | Regenerates the keymap SVG diagrams from the shield's own devicetree files |
