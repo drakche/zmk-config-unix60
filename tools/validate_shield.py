@@ -298,14 +298,12 @@ QMK_TO_ZMK = {
     "KC_PMNS": "&kp KP_MINUS",
 }
 
-# Wireless and Studio-unlock keys substituted into &trans slots on the Fn
-# layer. Position -> binding.
-# Bluetooth and soft reset moved to the Meta layer (Fn+Ctrl); only the
-# bootloader, the Meta-layer hold and the Studio unlock remain here.
+# Keys substituted into &trans slots on the Fn layer. Position -> binding.
+# Everything that takes the board out of normal operation - Bluetooth, soft
+# reset, the bootloader and the Studio unlock - now lives on the Meta layer,
+# so the only thing left here is the hold that reaches it.
 FN_SUBSTITUTIONS = {
-    22: "&bootloader",    # U
     29: "&mo 2",          # Ctrl - holds the Meta layer while Fn is down
-    47: "&studio_unlock", # B
 }
 
 # Layer 2 is not in unix60.json. Keyed by position so a typo in the keymap
@@ -318,6 +316,8 @@ META_BINDINGS = {
     4:  "&bt BT_SEL 3",
     5:  "&bt BT_SEL 4",
     14: "&sys_reset",     # `
+    31: "&studio_unlock", # S
+    47: "&bootloader",    # B
 }
 
 

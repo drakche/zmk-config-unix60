@@ -28,7 +28,8 @@ no local Zephyr toolchain in this repo.
    - `unix60_row2col.uf2` — a **diagnostic** build only. See "Reversed
      diodes" below. Do not flash this unless the plain build scans no keys
      at all.
-3. Put the controller into bootloader mode: double-tap its reset button. A
+3. Put the controller into bootloader mode: press `Fn` + `Ctrl` + `B`, or
+   double-tap the controller's reset button if the board is unresponsive. A
    drive named `NICENANO` will mount on your computer.
 4. Drag the `.uf2` file you chose onto the `NICENANO` drive. It flashes and
    reboots automatically once the copy finishes.
@@ -37,13 +38,14 @@ no local Zephyr toolchain in this repo.
 
 | Keys | Action |
 | --- | --- |
-| `Fn` + `U` | Enter the bootloader |
-| `Fn` + `B` | Unlock ZMK Studio (only needed on the `unix60_studio` build) |
 | `Fn` + `Ctrl` + `Esc` | Clear the current Bluetooth profile |
 | `Fn` + `Ctrl` + `1`…`5` | Select Bluetooth profile 0-4 |
 | `Fn` + `Ctrl` + `` ` `` | Soft reset |
+| `Fn` + `Ctrl` + `B` | Enter the bootloader |
+| `Fn` + `Ctrl` + `S` | Unlock ZMK Studio (only needed on the `unix60_studio` build) |
 
-Bluetooth and soft reset sit behind `Fn` + `Ctrl` rather than `Fn` alone, so a
+Every key that takes the board out of normal operation sits behind `Fn` + `Ctrl`
+rather than `Fn` alone, so a
 mistyped `Fn` chord cannot drop a pairing or reset the board mid-use.
 
 ## Hardware
@@ -71,8 +73,8 @@ alternate-layout switch positions, left unmapped on purpose:
 
 `unix60.keymap` defines three layers, named `Base`, `Fn` and `Meta` (the names
 ZMK Studio shows). `Base` and `Fn` are ported 1:1 from `unix60.json` (the QMK
-Configurator export in the repo root); the additions are the bootloader and
-Studio-unlock keys and the `Meta` layer hold, which occupy slots the export
+Configurator export in the repo root); the only addition is the `Meta` layer
+hold, which occupies a slot the export
 left blank.
 
 `Meta` is reached by holding `Fn` and then `Ctrl`. `Ctrl` is a modifier rather

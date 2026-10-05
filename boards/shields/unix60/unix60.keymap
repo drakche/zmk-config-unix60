@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  *
  * Ported 1:1 from unix60.json (QMK Configurator export, LAYOUT_60_hhkb).
- * The only additions are the bootloader and ZMK Studio unlock keys, the
- * Fn+Ctrl layer hold, and the Meta layer itself - all in slots the export
- * left as KC_TRNS.
+ * The only additions are the Fn+Ctrl layer hold, which occupies a slot the
+ * export left as KC_TRNS, and the Meta layer itself. Everything that takes
+ * the board out of normal operation lives on that layer.
  */
 
 #include <behaviors.dtsi>
@@ -39,36 +39,37 @@
             display-name = "Fn";
 // ---------------------------------------------------------------------------------------------
 // | PWR | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 | INS | DEL |
-// |  CAPS  |     |     |     |     |     |     | BOOT| PSCR| SCRL|PAUSE|  UP |     |  NUM   |
+// |  CAPS  |     |     |     |     |     |     |     | PSCR| SCRL|PAUSE|  UP |     |  NUM   |
 // |          | VOLD| VOLU| MUTE| EJCT|     | KP* | KP/ | HOME| PGUP| LEFT|RIGHT|   KPENT    |
-// |             |MPREV|MPLAY|MSTOP|MNEXT|STUDO| KP+ | KP- | END | PGDN| DOWN|        |      |
+// |             |MPREV|MPLAY|MSTOP|MNEXT|     | KP+ | KP- | END | PGDN| DOWN|        |      |
 // |        |     |        |                                   |        |     |        |
 // ---------------------------------------------------------------------------------------------
             bindings = <
 &kp K_POWER &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp INS &kp DEL
-&kp CAPS    &trans &trans &trans &trans &trans &trans &bootloader &kp PSCRN &kp SLCK &kp PAUSE_BREAK &kp UP &trans &kp KP_NUM
+&kp CAPS    &trans &trans &trans &trans &trans &trans &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK &kp UP &trans &kp KP_NUM
 &mo 2       &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &kp C_EJECT &trans &kp KP_MULTIPLY &kp KP_DIVIDE &kp HOME &kp PG_UP &kp LEFT &kp RIGHT &kp KP_ENTER
-&trans      &kp C_PREV &kp C_PP &kp C_STOP &kp C_NEXT &studio_unlock &kp KP_PLUS &kp KP_MINUS &kp END &kp PG_DN &kp DOWN &trans &trans
+&trans      &kp C_PREV &kp C_PP &kp C_STOP &kp C_NEXT &trans &kp KP_PLUS &kp KP_MINUS &kp END &kp PG_DN &kp DOWN &trans &trans
 &trans      &trans &trans &trans &trans
             >;
         };
 
         meta_layer {
             display-name = "Meta";
-// Held with Fn + Ctrl. Bluetooth management, kept off the Fn layer so a
-// stray Fn press cannot drop a pairing.
+// Held with Fn + Ctrl. Bluetooth management plus the two keys that take the
+// board out of normal operation, kept off the Fn layer so a stray Fn press
+// cannot drop a pairing, reboot into the bootloader or unlock Studio.
 // ---------------------------------------------------------------------------------------------
 // |BTCLR| BT0 | BT1 | BT2 | BT3 | BT4 |     |     |     |     |     |     |     |     |RESET|
 // |        |     |     |     |     |     |     |     |     |     |     |     |     |        |
-// |          |     |     |     |     |     |     |     |     |     |     |     |            |
-// |             |     |     |     |     |     |     |     |     |     |     |        |      |
+// |          |     |STUDO|     |     |     |     |     |     |     |     |     |            |
+// |             |     |     |     |     |BOOT |     |     |     |     |     |        |      |
 // |        |     |        |                                   |        |     |        |
 // ---------------------------------------------------------------------------------------------
             bindings = <
 &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans &trans &trans &trans &trans &trans &trans &trans &sys_reset
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &studio_unlock &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &bootloader &trans &trans &trans &trans &trans &trans &trans
 &trans &trans &trans &trans &trans
             >;
         };

@@ -61,7 +61,7 @@ Three layers are defined in `boards/shields/unix60/unix60.keymap`:
 
 `Base` and `Fn` are ported 1:1 from `unix60.json` (a QMK Configurator export
 for `LAYOUT_60_hhkb`, vendored at the repo root). The additions on top of the
-export are the bootloader and ZMK Studio unlock keys and the `Meta` layer
+export are the `Meta` layer
 hold, which occupy slots the export left blank (`KC_TRNS`). `Meta` is new and
 has no counterpart in the export.
 
@@ -93,9 +93,9 @@ the 1.5u blockers the HHKB case requires at each end.
 
 ```
 | PWR | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 | INS | DEL |
-|  CAPS  |     |     |     |     |     |     | BOOT| PSCR| SCRL|PAUSE|  UP |     |  NUM   |
+|  CAPS  |     |     |     |     |     |     |     | PSCR| SCRL|PAUSE|  UP |     |  NUM   |
 |          | VOLD| VOLU| MUTE| EJCT|     | KP* | KP/ | HOME| PGUP| LEFT|RIGHT|   KPENT    |
-|             |MPREV|MPLAY|MSTOP|MNEXT|STUDO| KP+ | KP- | END | PGDN| DOWN|        |      |
+|             |MPREV|MPLAY|MSTOP|MNEXT|     | KP+ | KP- | END | PGDN| DOWN|        |      |
 |        |     |        |                                   |        |     |        |
 ```
 
@@ -103,18 +103,17 @@ Row by row:
 
 - **Number row → F-keys and system:** `PWR` (system power), `F1`-`F12`,
   `Ins`, `Del`.
-- **QWERTY row → device control:** `Caps` is unchanged; `U` enters the
-  bootloader, then `PrtSc`, `ScrLk`, `Pause`, `Up`, and `NumLk`. Bluetooth and
-  soft reset used to live on this row and have moved to the `Meta` layer, so a
-  mistyped `Fn` chord cannot drop a pairing or reset the board.
+- **QWERTY row → device control:** `Caps` is unchanged, then `PrtSc`, `ScrLk`,
+  `Pause`, `Up`, and `NumLk`. Bluetooth, soft reset and the bootloader used to
+  live on this row and have all moved to the `Meta` layer, so a mistyped `Fn`
+  chord cannot drop a pairing, reset the board or reboot it into the
+  bootloader.
 - **Home row → media volume and numpad/navigation:** `Vol-`, `Vol+`, `Mute`,
   `Eject`, then a numpad overlay (`KP*`, `KP/`, `Home`, `PgUp`, `Left`,
   `Right`, `KP Enter`).
-- **Bottom letter row → media transport, Studio, and more numpad:** `Prev`,
-  `Play/Pause`, `Stop`, `Next`, then **`B` unlocks ZMK Studio**
-  (`&studio_unlock` — required once per Studio connection on the
-  `unix60_studio` build; see below), then `KP+`, `KP-`, `End`, `PgDn`,
-  `Down`.
+- **Bottom letter row → media transport and more numpad:** `Prev`,
+  `Play/Pause`, `Stop`, `Next`, then `KP+`, `KP-`, `End`, `PgDn`, `Down`. The
+  Studio unlock was here on `B` and has moved to the `Meta` layer.
 - **Bottom row:** unchanged (`&trans` throughout — no alternate function for
   Alt/Gui/Space here).
 
@@ -122,11 +121,11 @@ Row by row:
 
 | Keys | Action |
 | --- | --- |
-| `Fn` + `U` | Enter the bootloader |
-| `Fn` + `B` | Unlock ZMK Studio (only meaningful on the `unix60_studio` build) |
 | `Fn` + `Ctrl` + `Esc` | Clear the current Bluetooth profile |
 | `Fn` + `Ctrl` + `1`…`5` | Select Bluetooth profile 0-4 |
 | `Fn` + `Ctrl` + `` ` `` | Soft reset |
+| `Fn` + `Ctrl` + `B` | Enter the bootloader |
+| `Fn` + `Ctrl` + `S` | Unlock ZMK Studio (only meaningful on the `unix60_studio` build) |
 | `Fn` + `F1`…`F12` | Function keys |
 | `Fn` + arrows / `Home`/`End`/`PgUp`/`PgDn` | Navigation cluster |
 | `Fn` + media row (`VOLD`/`VOLU`/`MUTE`/`EJCT`/`MPREV`/`MPLAY`/`MSTOP`/`MNEXT`) | Media transport and volume |
@@ -139,8 +138,8 @@ Row by row:
 ```
 |BTCLR| BT0 | BT1 | BT2 | BT3 | BT4 |     |     |     |     |     |     |     |     |RESET|
 |        |     |     |     |     |     |     |     |     |     |     |     |     |        |
-|          |     |     |     |     |     |     |     |     |     |     |     |            |
-|             |     |     |     |     |     |     |     |     |     |     |        |      |
+|          |     |STUDO|     |     |     |     |     |     |     |     |     |            |
+|             |     |     |     |     |BOOT |     |     |     |     |     |        |      |
 |        |     |        |                                   |        |     |        |
 ```
 
@@ -150,9 +149,14 @@ it falls through to the `Fn` layer beneath.
 - **`Esc`** clears the current Bluetooth profile (`&bt BT_CLR`).
 - **`1`-`5`** select Bluetooth profiles 0-4 (`&bt BT_SEL 0`-`4`).
 - **`` ` ``** soft-resets the device (`&sys_reset`).
+- **`B`** reboots into the bootloader to flash firmware (`&bootloader`).
+- **`S`** unlocks ZMK Studio (`&studio_unlock`), needed once per Studio
+  connection on the `unix60_studio` build.
 
-These were on the `Fn` layer originally. Moving them behind a second hold means
-a mistyped `Fn` chord can no longer drop a pairing or reset the board mid-use.
+All of these were on the `Fn` layer originally. Moving them behind a second
+hold means a mistyped `Fn` chord can no longer drop a pairing, reset the board
+mid-use or reboot it into the bootloader. Nothing on the `Fn` layer now does
+anything worse than type.
 
 Each profile advertises under its own name — `Unix60-1` through `Unix60-5`,
 rather than five identical `Unix60` entries — but only to hosts paired after the
