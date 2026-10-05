@@ -10,8 +10,8 @@
  * listens for the active profile changing and renames the device to match,
  * which zmk_ble_set_device_name() applies before advertising restarts.
  *
- * The names are indexed by ZMK profile number, so they are off by one from the
- * number row that selects them: Fn+Ctrl+1 is profile 0, "Unix60-BT0".
+ * The names are numbered by the key that selects the profile, not by ZMK's
+ * own profile index, which starts at 0: Fn+Ctrl+1 is profile 0, "Unix60-1".
  *
  * A host caches the name it saw when it bonded. Renaming therefore only shows
  * up on hosts paired after this firmware is flashed -- an existing bond keeps
@@ -29,7 +29,7 @@ LOG_MODULE_REGISTER(unix60_ble_names, CONFIG_ZMK_LOG_LEVEL);
 
 /* Not const: zmk_ble_set_device_name() takes a non-const char *. */
 static char profile_names[][16] = {
-    "Unix60-BT0", "Unix60-BT1", "Unix60-BT2", "Unix60-BT3", "Unix60-BT4",
+    "Unix60-1", "Unix60-2", "Unix60-3", "Unix60-4", "Unix60-5",
 };
 
 static int profile_name_listener(const zmk_event_t *eh) {

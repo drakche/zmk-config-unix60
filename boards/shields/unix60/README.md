@@ -119,14 +119,14 @@ and renames the device to match the profile that just became active:
 
 | Keys | Profile | Advertised as |
 | --- | --- | --- |
-| `Fn` + `Ctrl` + `1` | 0 | `Unix60-BT0` |
-| `Fn` + `Ctrl` + `2` | 1 | `Unix60-BT1` |
-| `Fn` + `Ctrl` + `3` | 2 | `Unix60-BT2` |
-| `Fn` + `Ctrl` + `4` | 3 | `Unix60-BT3` |
-| `Fn` + `Ctrl` + `5` | 4 | `Unix60-BT4` |
+| `Fn` + `Ctrl` + `1` | 0 | `Unix60-1` |
+| `Fn` + `Ctrl` + `2` | 1 | `Unix60-2` |
+| `Fn` + `Ctrl` + `3` | 2 | `Unix60-3` |
+| `Fn` + `Ctrl` + `4` | 3 | `Unix60-4` |
+| `Fn` + `Ctrl` + `5` | 4 | `Unix60-5` |
 
-The names follow ZMK's profile numbering, which starts at 0, so they are off by
-one from the number row that selects them.
+The names are numbered by the key you press, not by ZMK's own profile index,
+which starts at 0 and so reads one lower throughout the rest of this repo.
 
 **A host caches the name it saw when it bonded.** Flashing this does not rename
 anything that is already paired — to pick up the new name on a host, remove the

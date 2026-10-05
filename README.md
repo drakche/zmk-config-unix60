@@ -154,7 +154,7 @@ it falls through to the `Fn` layer beneath.
 These were on the `Fn` layer originally. Moving them behind a second hold means
 a mistyped `Fn` chord can no longer drop a pairing or reset the board mid-use.
 
-Each profile advertises under its own name — `Unix60-BT0` through `Unix60-BT4`,
+Each profile advertises under its own name — `Unix60-1` through `Unix60-5`,
 rather than five identical `Unix60` entries — but only to hosts paired after the
 rename; see [Per-profile
 names](boards/shields/unix60/README.md#per-profile-names).
