@@ -108,6 +108,21 @@ variant: 2u backspace, unsplit right shift, seven-key bottom row. The Unix60 is
 true HHKB, so `unix60-layouts.dtsi` defines its own layout, transcribed from
 QMK's `LAYOUT_60_hhkb`.
 
+## Random disconnects
+
+A board that drops and reconnects on its own while the battery still reads full
+is usually a low-frequency clock problem, not a power one. BLE derives its
+connection timing from the 32.768 kHz clock, and on a nice!nano whose crystal is
+missing, badly soldered or out of spec the keyboard drifts out of its receive
+windows and the host gives up on it.
+
+`unix60.conf` sets `CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`, which runs that clock
+from the nRF52's internal RC oscillator instead. The RC oscillator is on the die
+and cannot be missing, so this rules the crystal out. It is the worse clock when
+the crystal works -- 500 ppm against 20 ppm, so the radio keeps wider receive
+windows and idle current rises a little -- so comment it back out if it makes no
+difference.
+
 ## Reversed diodes (`unix60_row2col` build)
 
 The Unix60 ships as a bare PCB, so the 63 diodes are hand-soldered. If they
