@@ -135,6 +135,20 @@ pairing there, clear the profile with `Fn` + `Ctrl` + `Esc`, and pair again.
 This needs `CONFIG_BT_DEVICE_NAME_DYNAMIC=y`; `bt_set_name()` is a stub without
 it. Edit the `profile_names` array to change the names.
 
+### Pairing fails with "incorrect PIN or passkey"
+
+A bond has two halves. `Fn` + `Ctrl` + `Esc` clears only the keyboard's, so a
+host still holding its half tries to reconnect with a key the keyboard no
+longer has, and reports it as a bad PIN or passkey. Clear both: forget the
+keyboard on the host as well, then pair again.
+
+The same error came from a bug in the renaming above. ZMK raises
+`zmk_ble_active_profile_changed` from `set_profile_address()`, `connected()`
+and `disconnected()`, not only on `BT_SEL`, so it also fires while a bond is
+being written. Renaming stops and restarts advertising, which killed the very
+pairing that triggered it. The listener now ignores events for the profile
+already in use, so advertising is only disturbed by a real profile switch.
+
 ### Random disconnects
 
 A board that drops and reconnects on its own while the battery still reads full
