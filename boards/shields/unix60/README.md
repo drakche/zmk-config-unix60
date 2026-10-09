@@ -161,10 +161,33 @@ windows and the host gives up on it.
 
 `unix60.conf` sets `CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`, which runs that clock
 from the nRF52's internal RC oscillator instead. The RC oscillator is on the die
-and cannot be missing, so this rules the crystal out. It is the worse clock when
-the crystal works — 500 ppm against 20 ppm, so the radio keeps wider receive
-windows and idle current rises a little — so comment it back out if it makes no
-difference.
+and cannot be missing, so this rules the crystal out.
+
+It worked. The disconnects stopped from the first flash and have not returned
+over several days of normal wireless use, which means the crystal on this board
+is genuinely marginal, and the setting stays. It is the worse clock when the
+crystal is good — 500 ppm against 20 ppm, so the radio keeps wider receive
+windows and idle current rises a little — but that is the right trade here.
+
+## Power
+
+`unix60.conf` sets `CONFIG_ZMK_SLEEP=y`, which ZMK does not enable by itself.
+
+Without it the board only reaches the light idle state at `ZMK_IDLE_TIMEOUT`
+(30 s by default). That shuts the display down but keeps the radio and the
+matrix scan alive, so a keyboard left sitting -- disconnected or not -- goes on
+draining the battery at close to its normal rate.
+
+Deep sleep powers the matrix down and stops advertising, taking idle draw to
+microamps. It engages after `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT`, 15 minutes here.
+
+Two things to expect in exchange:
+
+- The keypress that wakes the board is swallowed; it wakes rather than types.
+- A Bluetooth host takes a second or two to reconnect afterwards.
+
+Lower `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` to sleep sooner at the cost of meeting
+that wake more often. Comment both lines out to go back to never sleeping.
 
 ## Reversed diodes (`unix60_row2col` build)
 
