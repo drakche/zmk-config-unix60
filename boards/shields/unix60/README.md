@@ -28,11 +28,30 @@ no local Zephyr toolchain in this repo.
    - `unix60_row2col.uf2` — a **diagnostic** build only. See "Reversed
      diodes" below. Do not flash this unless the plain build scans no keys
      at all.
-3. Put the controller into bootloader mode: press `Fn` + `Ctrl` + `B`, or
+3. Connect the board with a **USB-A to USB-C cable**. See "C-to-C cables do
+   not work" below; a C-to-C cable leaves the board dead to the host and
+   wastes a great deal of time.
+4. Put the controller into bootloader mode: press `Fn` + `Ctrl` + `B`, or
    double-tap the controller's reset button if the board is unresponsive. A
    drive named `NICENANO` will mount on your computer.
-4. Drag the `.uf2` file you chose onto the `NICENANO` drive. It flashes and
-   reboots automatically once the copy finishes.
+5. Drag the `.uf2` file you chose onto the `NICENANO` drive. It flashes and
+   reboots automatically once the copy finishes. macOS warns that the disk was
+   ejected improperly; that is the board rebooting mid-copy, not a failure.
+
+### C-to-C cables do not work
+
+**Use USB-A to USB-C.** A USB-C to USB-C cable does not power this board at
+all: no charging, no enumeration, nothing on the host's USB bus in any state.
+
+A USB-C source supplies nothing until it detects a sink, and it detects one by
+looking for pull-down resistors on the CC pins. Boards that leave those off are
+invisible to a C-to-C cable, while an A-to-C cable has no such negotiation and
+simply supplies 5 V. This board behaves exactly that way, confirmed directly:
+identical cable-swap tests, C-to-C silent and A-to-C working.
+
+The failure is indistinguishable from dead hardware, which is the trap. The
+board was fine over Bluetooth throughout while the host saw no USB device
+appear or disappear across several replugs and bootloader attempts.
 
 ### Key reference
 
