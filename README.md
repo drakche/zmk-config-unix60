@@ -176,4 +176,5 @@ names](boards/shields/unix60/README.md#per-profile-names).
 | `src/bluetooth_profile_name.c` | Advertises a different name per Bluetooth profile, so paired hosts do not all show `Unix60` |
 | `CMakeLists.txt` | Builds `src/` into the firmware; the module's only C code |
 | `tools/validate_shield.py` | The project's only test suite — static consistency checks, run with `python3 tools/validate_shield.py` |
+| `tools/battery-watch.sh` | Logs whether the board is asleep overnight, to tell a worn cell apart from a matrix that keeps waking it |
 | `tools/render_keymap.py` | Regenerates the keymap SVG diagrams from the shield's own devicetree files |

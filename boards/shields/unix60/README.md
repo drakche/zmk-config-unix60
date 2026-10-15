@@ -208,6 +208,56 @@ Two things to expect in exchange:
 Lower `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` to sleep sooner at the cost of meeting
 that wake more often. Comment both lines out to go back to never sleeping.
 
+### Diagnosing battery drain
+
+A keyboard that goes flat fast has two very different causes, and guessing
+between them means either resoldering a switch or buying a battery for no
+reason:
+
+- **Something wakes the board.** Only a GPIO interrupt leaves deep sleep, so
+  on a keyboard that means the matrix -- a marginal switch or a short. Each
+  wake costs a reconnect and 15 minutes of running before it sleeps again.
+- **The cell is worn.** A tired LiPo sags under no load at all, and ZMK's
+  voltage-derived percentage reports that as a steep drop.
+
+They are easy to tell apart, because a sleeping board has its radio off and so
+vanishes from the host. `tools/battery-watch.sh` samples that every 30 s. Two
+transitions over a night -- one into sleep, one when you wake it -- means the
+firmware is innocent and the charge went out of the cell by itself.
+
+Note the battery percentage when you unplug and again before touching the
+keyboard in the morning. Allow about 12% for surface charge settling off the
+charger in the first hour; that much apparent loss is normal and not a fault.
+
+#### Result on this board
+
+Run of 2026-10-14, 1972 samples, no gaps:
+
+```
+16:37:52  state=1   start
+16:56:27  state=1 -> state=0   slept
+09:08:05  state=0 -> state=1   woken by hand
+
+state=0  1934 samples = 16.1 h
+state=1    38 samples =  0.3 h
+```
+
+Two transitions, so nothing woke it: deep sleep held for 16.1 hours
+unbroken, and the matrix is clean. The battery still went 97% to 61%, which
+is 4170 mV to 3900 mV, around 200 mV of real sag once settling is allowed
+for.
+
+That is not consumption. Deep sleep draws single-digit microamps, roughly
+0.24 mAh over 16 hours; for that to be 36% of the cell, the cell would have
+to be 0.7 mAh. The charge leaves on its own, which is self-discharge in a
+failing LiPo -- a healthy one loses a few percent per *month*. At the
+observed 2.25%/h a full charge lasts about 44 hours, against the weeks deep
+sleep should give.
+
+The remaining ambiguity needs a multimeter: charge the cell, disconnect it
+from the controller, leave it 16 hours and measure. Steady means something on
+the board leaks in System OFF; sagging again means the cell.
+
 ## Reversed diodes (`unix60_row2col` build)
 
 The Unix60 ships as a bare PCB, so the 63 diodes are hand-soldered. If they
